@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}CRM{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body { background-color: #f8f9fa; }
+    .sidebar { min-height: 100vh; background: #1e2a3a; }
+    .sidebar .nav-link { color: #adb5bd; padding: .6rem 1.2rem; border-radius: 6px; }
+    .sidebar .nav-link:hover, .sidebar .nav-link.active { color: #fff; background: rgba(255,255,255,.1); }
+    .sidebar .brand { color: #fff; font-weight: 700; font-size: 1.2rem; padding: 1.2rem; display: block; text-decoration: none; }
+    .sidebar .nav-section { color: #6c757d; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; padding: .8rem 1.2rem .3rem; }
+    .main-content { min-height: 100vh; }
+    .card { border: none; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    .stat-card { border-left: 4px solid; }
+    .badge-lead { background-color: #6c757d; }
+    .badge-qualified { background-color: #0d6efd; }
+    .badge-proposal { background-color: #fd7e14; }
+    .badge-won { background-color: #198754; }
+    .badge-lost { background-color: #dc3545; }
+  </style>
+</head>
+<body>
+<div class="d-flex">
+  <nav class="sidebar col-auto p-2" style="width:220px; min-width:220px;">
+    <a href="{% url 'core:dashboard' %}" class="brand">
+      <i class="bi bi-diagram-3-fill me-2"></i>CRM
+    </a>
+    <div class="nav-section">Principal</div>
+    <ul class="nav flex-column gap-1 mb-3">
+      <li class="nav-item">
+        <a href="{% url 'core:dashboard' %}" class="nav-link {% if request.resolver_match.namespace == 'core' %}active{% endif %}">
+          <i class="bi bi-speedometer2 me-2"></i>Dashboard
+        </a>
+      </li>
+    </ul>
+    <div class="nav-section">Gestión</div>
+    <ul class="nav flex-column gap-1 mb-3">
+      <li class="nav-item">
+        <a href="{% url 'contacts:list' %}" class="nav-link {% if request.resolver_match.namespace == 'contacts' %}active{% endif %}">
+          <i class="bi bi-person-lines-fill me-2"></i>Contactos
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'companies:list' %}" class="nav-link {% if request.resolver_match.namespace == 'companies' %}active{% endif %}">
+          <i class="bi bi-building me-2"></i>Empresas
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'deals:list' %}" class="nav-link {% if request.resolver_match.namespace == 'deals' %}active{% endif %}">
+          <i class="bi bi-briefcase me-2"></i>Negocios
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'activities:list' %}" class="nav-link {% if request.resolver_match.namespace == 'activities' %}active{% endif %}">
+          <i class="bi bi-calendar-check me-2"></i>Actividades
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="main-content flex-grow-1 p-4">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

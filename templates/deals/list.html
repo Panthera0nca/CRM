@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Negocios — CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="mb-0 fw-semibold">Negocios</h4>
+  <div class="d-flex gap-2">
+    <a href="{% url 'deals:kanban' %}" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-kanban me-1"></i>Kanban
+    </a>
+    <a href="{% url 'deals:create' %}" class="btn btn-primary btn-sm">
+      <i class="bi bi-plus-lg me-1"></i>Nuevo negocio
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <table class="table table-hover mb-0">
+    <thead class="table-light">
+      <tr><th>Título</th><th>Etapa</th><th>Valor</th><th>Contacto</th><th>Cierre</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for deal in deals %}
+      <tr>
+        <td><a href="{% url 'deals:detail' deal.pk %}" class="text-decoration-none fw-medium">{{ deal.title }}</a></td>
+        <td><span class="badge badge-{{ deal.stage }}">{{ deal.get_stage_display }}</span></td>
+        <td>${{ deal.value|floatformat:0 }}</td>
+        <td>{% if deal.contact %}<a href="{% url 'contacts:detail' deal.contact.pk %}" class="text-decoration-none">{{ deal.contact }}</a>{% else %}—{% endif %}</td>
+        <td>{{ deal.close_date|date:"d M Y"|default:"—" }}</td>
+        <td class="text-end">
+          <a href="{% url 'deals:update' deal.pk %}" class="btn btn-sm btn-outline-secondary me-1">Editar</a>
+          <a href="{% url 'deals:delete' deal.pk %}" class="btn btn-sm btn-outline-danger">Eliminar</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center text-muted py-4">Sin negocios todavía.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

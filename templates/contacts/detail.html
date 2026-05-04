@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}{{ contact.full_name }} — CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <a href="{% url 'contacts:list' %}" class="text-muted small text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Contactos</a>
+    <h4 class="mb-0 fw-semibold mt-1">{{ contact.full_name }}</h4>
+  </div>
+  <div>
+    <a href="{% url 'contacts:update' contact.pk %}" class="btn btn-outline-secondary btn-sm me-2">Editar</a>
+    <a href="{% url 'contacts:delete' contact.pk %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-5">
+    <div class="card p-3">
+      <h6 class="fw-semibold mb-3">Información</h6>
+      <dl class="row mb-0">
+        <dt class="col-5 text-muted">Email</dt><dd class="col-7">{{ contact.email }}</dd>
+        <dt class="col-5 text-muted">Teléfono</dt><dd class="col-7">{{ contact.phone|default:"—" }}</dd>
+        <dt class="col-5 text-muted">Empresa</dt>
+        <dd class="col-7">
+          {% if contact.company %}<a href="{% url 'companies:detail' contact.company.pk %}">{{ contact.company }}</a>{% else %}—{% endif %}
+        </dd>
+        <dt class="col-5 text-muted">Creado</dt><dd class="col-7">{{ contact.created_at|date:"d M Y" }}</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="card p-3 mb-3">
+      <div class="d-flex justify-content-between mb-2">
+        <h6 class="fw-semibold mb-0">Negocios</h6>
+        <a href="{% url 'deals:create' %}" class="small text-decoration-none">+ Nuevo</a>
+      </div>
+      {% for deal in contact.deals.all %}
+        <div class="d-flex justify-content-between small mb-1">
+          <a href="{% url 'deals:detail' deal.pk %}" class="text-decoration-none">{{ deal.title }}</a>
+          <span class="badge badge-{{ deal.stage }}">{{ deal.get_stage_display }}</span>
+        </div>
+      {% empty %}
+        <p class="text-muted small mb-0">Sin negocios asociados.</p>
+      {% endfor %}
+    </div>
+    <div class="card p-3">
+      <div class="d-flex justify-content-between mb-2">
+        <h6 class="fw-semibold mb-0">Actividades</h6>
+        <a href="{% url 'activities:create' %}" class="small text-decoration-none">+ Nueva</a>
+      </div>
+      {% for act in contact.activities.all %}
+        <div class="small mb-1">
+          <span class="badge bg-secondary">{{ act.get_activity_type_display }}</span>
+          {{ act.description|truncatewords:8 }}
+          <span class="text-muted">· {{ act.date|date:"d M" }}</span>
+        </div>
+      {% empty %}
+        <p class="text-muted small mb-0">Sin actividades registradas.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

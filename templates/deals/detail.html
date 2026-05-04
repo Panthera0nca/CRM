@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}{{ deal.title }} — CRM{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <a href="{% url 'deals:list' %}" class="text-muted small text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Negocios</a>
+    <h4 class="mb-0 fw-semibold mt-1">{{ deal.title }}</h4>
+  </div>
+  <div>
+    <a href="{% url 'deals:update' deal.pk %}" class="btn btn-outline-secondary btn-sm me-2">Editar</a>
+    <a href="{% url 'deals:delete' deal.pk %}" class="btn btn-outline-danger btn-sm">Eliminar</a>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card p-3">
+      <h6 class="fw-semibold mb-3">Información</h6>
+      <dl class="row mb-0">
+        <dt class="col-5 text-muted">Etapa</dt>
+        <dd class="col-7"><span class="badge badge-{{ deal.stage }}">{{ deal.get_stage_display }}</span></dd>
+        <dt class="col-5 text-muted">Valor</dt><dd class="col-7">${{ deal.value|floatformat:0 }}</dd>
+        <dt class="col-5 text-muted">Cierre</dt><dd class="col-7">{{ deal.close_date|date:"d M Y"|default:"—" }}</dd>
+        <dt class="col-5 text-muted">Contacto</dt>
+        <dd class="col-7">{% if deal.contact %}<a href="{% url 'contacts:detail' deal.contact.pk %}">{{ deal.contact }}</a>{% else %}—{% endif %}</dd>
+        <dt class="col-5 text-muted">Empresa</dt>
+        <dd class="col-7">{% if deal.company %}<a href="{% url 'companies:detail' deal.company.pk %}">{{ deal.company }}</a>{% else %}—{% endif %}</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between mb-2">
+        <h6 class="fw-semibold mb-0">Actividades</h6>
+        <a href="{% url 'activities:create' %}" class="small text-decoration-none">+ Nueva</a>
+      </div>
+      {% for act in deal.activities.all %}
+        <div class="small mb-2 border-bottom pb-2">
+          <span class="badge bg-secondary">{{ act.get_activity_type_display }}</span>
+          <span class="ms-1">{{ act.description|truncatewords:12 }}</span>
+          <span class="text-muted ms-1">· {{ act.date|date:"d M Y, H:i" }}</span>
+        </div>
+      {% empty %}
+        <p class="text-muted small mb-0">Sin actividades registradas.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
